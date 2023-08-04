@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchData } from "./redux/actions/post.actions";
 
-function App() {
+const App = () => {
+  let loading = useSelector(state => state.post.loading)
+  let data = useSelector(state => state.post.data)
+  let error = useSelector(state => state.post.error)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchData())
+  }, [dispatch])
+
+  if (loading) {
+    return <h1>Loading...</h1>
+  }
+  if (error) {
+    return <h1>{error}</h1>
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Post List</h1>
+      {
+        data.map((post) => (
+          <div key={post.id}>
+            <h2>{post.title}</h2>
+            <p>{post.body}</p>
+          </div>
+        ))
+      }
     </div>
-  );
+  )
 }
 
 export default App;
